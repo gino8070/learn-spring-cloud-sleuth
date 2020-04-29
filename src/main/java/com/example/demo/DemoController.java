@@ -1,17 +1,15 @@
 package com.example.demo;
 
-import java.util.Map;
 import java.util.Random;
 
-// import brave.Span;
-// import brave.Tracer;
+import brave.Span;
+import brave.Tracer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.context.ServletWebServerInitializedEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -25,6 +23,8 @@ public class DemoController
 	private int port;
 	@Autowired
 	private RestTemplate restTemplate;
+	@Autowired
+	private Tracer tracer;
 
 	@RequestMapping("/")
 	public String greeting() throws InterruptedException {
@@ -38,7 +38,9 @@ public class DemoController
 	@RequestMapping("/hi")
 	public String hi() throws InterruptedException {
 		log.info("hi");
-		Thread.sleep(this.random.nextInt(1000));
+		int millis = this.random.nextInt(1000);
+		Thread.sleep(millis);
+		this.tracer.currentSpan().tag("random-sleep-millis", String.valueOf(millis));
 		String hey = this.restTemplate
 				.getForObject("http://localhost:" + this.port + "/hey", String.class);
 		return "hi/" + hey;
@@ -47,7 +49,9 @@ public class DemoController
 	@RequestMapping("/hey")
 	public String hey() throws InterruptedException {
 		log.info("hey");
-		Thread.sleep(this.random.nextInt(1000));
+		int millis = this.random.nextInt(1000);
+		Thread.sleep(millis);
+		this.tracer.currentSpan().tag("random-sleep-millis", String.valueOf(millis));
 		return "hey";
 	}
 

@@ -1,0 +1,12 @@
+version: '3'
+services:
+  xray:
+    image: amazon/aws-xray-daemon
+    ports:
+      - "2000:2000/udp"
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_SESSION_TOKEN
+      - AWS_REGION
+      - AWS_DEFAULT_REGION
