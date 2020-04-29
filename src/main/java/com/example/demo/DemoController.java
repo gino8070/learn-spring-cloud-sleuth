@@ -20,12 +20,30 @@ public class DemoController
 		implements ApplicationListener<ServletWebServerInitializedEvent> {
 
 	private static final Log log = LogFactory.getLog(DemoController.class);
+	@Autowired
+	private RestTemplate restTemplate;
 	private int port;
 
 	@RequestMapping("/")
 	public String greeting() throws InterruptedException {
 		log.info("hello");
-		return "hello";
+		String hi = this.restTemplate
+				.getForObject("http://localhost:" + this.port + "/hi", String.class);
+		String hey = this.restTemplate
+				.getForObject("http://localhost:" + this.port + "/hey", String.class);
+		return "hello/" + hi + "/" + hey;
+	}
+
+	@RequestMapping("/hi")
+	public String hi() throws InterruptedException {
+		log.info("hi");
+		return "hi";
+	}
+
+	@RequestMapping("/hey")
+	public String hey() throws InterruptedException {
+		log.info("hey");
+		return "hey";
 	}
 
 	@Override
