@@ -1,16 +1,17 @@
 package com.example.demo;
 
+import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.Callable;
 
-import brave.Span;
-import brave.Tracer;
+// import brave.Span;
+// import brave.Tracer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.context.ServletWebServerInitializedEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -20,29 +21,33 @@ public class DemoController
 		implements ApplicationListener<ServletWebServerInitializedEvent> {
 
 	private static final Log log = LogFactory.getLog(DemoController.class);
+	private final Random random = new Random();
+	private int port;
 	@Autowired
 	private RestTemplate restTemplate;
-	private int port;
 
 	@RequestMapping("/")
 	public String greeting() throws InterruptedException {
 		log.info("hello");
+		Thread.sleep(this.random.nextInt(1000));
 		String hi = this.restTemplate
 				.getForObject("http://localhost:" + this.port + "/hi", String.class);
-		String hey = this.restTemplate
-				.getForObject("http://localhost:" + this.port + "/hey", String.class);
-		return "hello/" + hi + "/" + hey;
+		return "hello/" + hi;
 	}
 
 	@RequestMapping("/hi")
 	public String hi() throws InterruptedException {
 		log.info("hi");
-		return "hi";
+		Thread.sleep(this.random.nextInt(1000));
+		String hey = this.restTemplate
+				.getForObject("http://localhost:" + this.port + "/hey", String.class);
+		return "hi/" + hey;
 	}
 
 	@RequestMapping("/hey")
 	public String hey() throws InterruptedException {
 		log.info("hey");
+		Thread.sleep(this.random.nextInt(1000));
 		return "hey";
 	}
 
