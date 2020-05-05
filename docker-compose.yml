@@ -10,3 +10,30 @@ services:
       - AWS_SESSION_TOKEN
       - AWS_REGION
       - AWS_DEFAULT_REGION
+  zipkin-aws:
+    image: openzipkin/zipkin-aws:0.21
+    ports:
+      - "9411:9411"
+    environment:
+      # AWS CREDS
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_SESSION_TOKEN
+      - AWS_REGION
+      - AWS_DEFAULT_REGION
+      # XRAY
+      - STORAGE_TYPE=xray
+      - AWS_XRAY_DAEMON_ADDRESS=xray:2000
+      # SQS
+      - SQS_QUEUE_URL
+      - SQS_PARALLELISM=1
+      - SQS_WAIT_TIME_SECONDS=20
+      - SQS_MAX_NUMBER_OF_MESSAGES=10
+      # - SQS_AWS_ACCESS_KEY_ID
+      # - SQS_AWS_SECRET_ACCESS_KEY
+      # - SQS_AWS_STS_ROLE_ARN
+      # - SQS_AWS_STS_REGION
+      - QUERY_LOG_LEVEL=DEBUG
+      - JAVA_OPTS=-Dlogging.level.zipkin=DEBUG -Dlogging.level.zipkin2=DEBUG -Djava.security.egd=file:/dev/./urandom
+    depends_on:
+      - xray
