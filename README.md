@@ -3,6 +3,7 @@
 ## Pre Requisites
 
 * JDK11
+* Docker
 
 ## Run
 
@@ -12,4 +13,10 @@
 
 ```sh
 curl localhost:8080
+```
+
+## with xray
+
+```sh
+docker-compose up -d
 ```

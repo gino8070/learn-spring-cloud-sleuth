@@ -2,8 +2,6 @@ package com.example.demo;
 
 import java.util.Random;
 
-import brave.Span;
-import brave.Tracer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -23,8 +21,6 @@ public class DemoController
 	private int port;
 	@Autowired
 	private RestTemplate restTemplate;
-	@Autowired
-	private Tracer tracer;
 
 	@RequestMapping("/")
 	public String greeting() throws InterruptedException {
@@ -40,7 +36,6 @@ public class DemoController
 		log.info("hi");
 		int millis = this.random.nextInt(1000);
 		Thread.sleep(millis);
-		this.tracer.currentSpan().tag("random-sleep-millis", String.valueOf(millis));
 		String hey = this.restTemplate
 				.getForObject("http://localhost:" + this.port + "/hey", String.class);
 		return "hi/" + hey;
@@ -51,7 +46,6 @@ public class DemoController
 		log.info("hey");
 		int millis = this.random.nextInt(1000);
 		Thread.sleep(millis);
-		this.tracer.currentSpan().tag("random-sleep-millis", String.valueOf(millis));
 		return "hey";
 	}
 
